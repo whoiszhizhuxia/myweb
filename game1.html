@@ -17,7 +17,6 @@
 
         .lwo {
             width: 58px;
-            background-color: aqua;
         }
 
         .mgr1 {
@@ -88,7 +87,7 @@
         let grade = 0; // 分数
         let speed = 1500;// 速度
         let addspeed = 50;// 每次增加速度
-
+        let colorlist = ['aqua','#2ed850','#d9d516','#e9820b','#e91f0b','#7352d0'] // 颜色
         let audio = document.getElementById("audio"); // 音乐
         // 删除
         function deletediv() {
@@ -130,11 +129,13 @@
         // 创建
         function create() {
             var div = document.createElement("div");
-            let num = Math.floor(Math.random() * 5)
-            let clname = 'lwo' + ' mgr' + num
+            let num = Math.floor(Math.random() * 5);
+            let mu = Math.floor(Math.random() * 5);
+            let clname = 'lwo' + ' mgr' + num;
             div.className = clname;
             let h = 60;
             div.style.height = h + 'px'
+            div.style.backgroundColor = colorlist[mu];
             div.onclick = deletediv;
             //div.id = id;
             let hezhi = document.getElementById('hezhi');
