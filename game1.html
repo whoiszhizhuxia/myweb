@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消除方块</title>
+    <style>
+        .box {
+            border: 1px solid black;
+            width: 300px;
+            height: 540px;
+            background-color: #eee;
+            margin: 10px 0 20px;
+        }
+
+        .lwo {
+            width: 58px;
+            background-color: aqua;
+        }
+
+        .mgr1 {
+            margin-left: 0;
+        }
+
+        .mgr2 {
+            margin-left: 60px;
+        }
+
+        .mgr3 {
+            margin-left: 120px;
+        }
+
+        .mgr4 {
+            margin-left: 180px;
+        }
+
+        .mgr5 {
+            margin-left: 240px;
+        }
+
+        #box {
+            background-color: #b3dbbd;
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            display: flex;
+            margin: 15px 0;
+            width: 100%;
+            justify-content: space-evenly;
+
+        }
+
+        .btn>input {
+            background-color: antiquewhite;
+            border: 0;
+            border-radius: 15px;
+            padding: 5px 10px;
+            color: #999090;
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="audio" src="./music/jie.mp3" autoplay></audio>
+    <div id="box">
+        <div class="btn">
+            <input type="button" value="开始" onclick="start()">
+            <input type="button" value="加速" onclick="checkspeed()">
+            <input id="stop" type="button" value="暂停" onclick="stop()">
+            <input type="button" value="主页">
+        </div>
+        <h2 id="grade">当前分数：0</h2>
+        <div id="hezhi" class="box"></div>
+    </div>
+    
+    <script>
+        // 变量 
+        let state = false; // 状态
+        let statemove = true // 是否暂停
+        let times = 0; // 存放定时器
+        let grade = 0; // 分数
+        let speed = 1500;// 速度
+        let addspeed = 50;// 每次增加速度
+
+        let audio = document.getElementById("audio"); // 音乐
+        // 删除
+        function deletediv() {
+            this.remove();
+            grade += 1;
+            document.getElementById('grade').innerHTML = "当前分数：" + grade;
+        }
+        // 修改速度
+        function checkspeed() {
+            if(!state||!statemove){
+                speed -= addspeed;
+            }
+            else{
+                alert("请先暂停游戏")
+            }
+            
+        }
+        // 暂停
+        function stop() {
+            if(statemove){
+                statemove =false;
+                window.clearInterval(times);
+                audio.pause();
+                document.getElementById('stop').value = "继续";
+                
+            }else{
+                if(state){
+                    statemove = true;
+                    audio.play();
+                    times = setInterval(() => {
+                    create()
+                    }, speed);
+                    document.getElementById('stop').value = "暂停";
+                }
+                
+            }
+            
+        }
+        // 创建
+        function create() {
+            var div = document.createElement("div");
+            let num = Math.floor(Math.random() * 5)
+            let clname = 'lwo' + ' mgr' + num
+            div.className = clname;
+            let h = 60;
+            div.style.height = h + 'px'
+            div.onclick = deletediv;
+            //div.id = id;
+            let hezhi = document.getElementById('hezhi');
+            let len = hezhi.children.length;
+            //计算方块到达底部需要多少个
+            let divlen = Math.floor(hezhi.clientHeight / h) - 1;
+            if (len != 0) {
+                if (len == divlen) {
+                    state = false;
+                    window.clearInterval(times);
+                    let msg = "游戏结束，是否重新开始"
+                    if(confirm(msg)==true){
+                        start();
+                    }
+                   
+                }
+                hezhi.insertBefore(div, hezhi.children[0])
+            }
+            else {
+                hezhi.appendChild(div);
+            }
+        }
+        // 初始化
+        function init() {
+            grade = 0;
+            speed = 1500;
+            let divlist = document.getElementById('hezhi').children;
+            if (divlist.length != 0) {
+                for (let i = (divlist.length-1); i >= 0; i--) {
+                    divlist[i].remove()
+                }
+            }
+        }
+        //循环创建
+        function start() {
+            if (!state) {
+                audio.load();
+                state = true;
+                init();
+                times = setInterval(() => {
+                    create()
+                }, speed);
+            }else{
+                let msg = "是否重新开始";
+                if(confirm(msg)){
+                    state = false;
+                    window.clearInterval(times);
+                    start();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
